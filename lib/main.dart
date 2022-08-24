@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:studyhelper/overview.dart';
+import 'package:studyhelper/Calendar.dart';
+import 'package:studyhelper/Dashboard.dart';
 
 void main() {
   runApp(MaterialApp(
     initialRoute: "/",
     routes: {
       "/": (context) => const Home(),
-      "/overview": (context) => const Overview()
+      "/overview": (context) => const Overview(),
+      "/dashboard":(context) => Dashboard()      
+
     },
   ));
 }
@@ -42,8 +45,16 @@ class _HomeState extends State<Home> {
                 child: Center(child: makeDarkText("Overview")),
               ),
               ListTile(
+                title: const Text("Home"),
+                onTap: () => Navigator.pushNamed(context, "/"),
+              ),
+              ListTile(
                 title: const Text("Calendar"),
                 onTap: () => Navigator.pushNamed(context, "/overview"),
+              ),
+              ListTile(
+                title: const Text("Dashboard"),
+                onTap: () => Navigator.pushNamed(context, "/dashboard"),
               )
             ],
           ),
@@ -60,24 +71,22 @@ class _HomeState extends State<Home> {
                 child: makeText("Upcomming events"),
               ),
               Expanded(
-                child: ListView.separated(
+                child: ListView.builder(
                   padding: const EdgeInsets.all(8),
                   itemCount: entries.length,
                   shrinkWrap: true,
                   itemBuilder: (BuildContext context, int index) {
                     return Center(
-                      child: Container(
-                        height: 60,
-                        width: 500,
-                        child: Card(
-                            color: Color(0xff0FFF95),
-                            child:
-                                Center(child: Text('Entry ${entries[index]}'))),
-                      ),
+                      child: Card(
+                          color: Color(0xff0FFF95),
+                          child:
+                              Center(child: Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Text('Entry ${entries[index]}'),
+                              ))),
                     );
                   },
-                  separatorBuilder: (BuildContext context, int index) =>
-                      const Divider(),
+                  
                 ),
               )
             ]),
