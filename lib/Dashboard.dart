@@ -44,13 +44,14 @@ class Dashboard extends StatelessWidget {
                 onTap: () => Navigator.pushNamed(context, "/"),
               ),
               ListTile(
+                title: const Text("Dashboard"),
+                onTap: () => Navigator.pushNamed(context, "/dashboard"),
+              ),
+              ListTile(
                 title: const Text("Calendar"),
                 onTap: () => Navigator.pushNamed(context, "/overview"),
               ),
-              ListTile(
-                title: const Text("Dashboard"),
-                onTap: () => Navigator.pushNamed(context, "/dashboard"),
-              )
+              
             ],
           ),
         ),

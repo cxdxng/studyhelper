@@ -15,6 +15,7 @@ class Overview extends StatefulWidget {
 class _OverviewState extends State<Overview> {
 
   // Using syncfusion calendar:: https://pub.dev/packages/syncfusion_flutter_calendar
+  
 
   
   @override
@@ -48,9 +49,12 @@ class _OverviewState extends State<Overview> {
         body: Container(
           child: SfCalendar(
             view: CalendarView.month,
+            monthViewSettings: const MonthViewSettings(appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
           )
         ),
       ),
     );
   }
+
+  
 }

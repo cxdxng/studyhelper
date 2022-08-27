@@ -1,6 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:studyhelper/AddEvent.dart';
 import 'package:studyhelper/Calendar.dart';
 import 'package:studyhelper/Dashboard.dart';
+import 'package:studyhelper/DatabaseHelper.dart';
+import 'package:studyhelper/ListEvents.dart';
+import 'package:studyhelper/TestUI.dart';
+import 'package:studyhelper/MysqlData.dart';
+
+import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -8,7 +19,10 @@ void main() {
     routes: {
       "/": (context) => const Home(),
       "/overview": (context) => const Overview(),
-      "/dashboard":(context) => Dashboard()      
+      "/dashboard":(context) => Dashboard(),
+      "/addEvent":(context) => const AddEvent(),
+      "/listEvents":(context) => const ListEvents(),
+      "/test":(context) => const Test()
 
     },
   ));
@@ -22,17 +36,31 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List entries = [
-    "Vorlesung A",
-    "Vorlesung B",
-    "Klausur A",
-    "Klausur B",
-    "Klausur B",
-    "Klausur B",
-    "Klausur B",
-  ];
+
+  // Declare variables for runtime
+
+  // Create a list for all upcomming appointments for runtime
+  List appointments = [];
+  // Create an instance of DateTime.now() to get current time
+  DateTime now = DateTime.now();
+  // Empty Strings to hold selected Date/Time for adding events
+  String formattedDate = "";
+  String formattedTime = "";
+  
+
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch data from Mysql to use in runtime
+    fetchDataFromMysql();
+    
+  }
+
+  
   @override
   Widget build(BuildContext context) {
+    
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -44,17 +72,30 @@ class _HomeState extends State<Home> {
               DrawerHeader(
                 child: Center(child: makeDarkText("Overview")),
               ),
+              
               ListTile(
                 title: const Text("Home"),
                 onTap: () => Navigator.pushNamed(context, "/"),
+              ),
+              ListTile(
+                title: const Text("Dashboard"),
+                onTap: () => Navigator.pushNamed(context, "/dashboard"),
               ),
               ListTile(
                 title: const Text("Calendar"),
                 onTap: () => Navigator.pushNamed(context, "/overview"),
               ),
               ListTile(
-                title: const Text("Dashboard"),
-                onTap: () => Navigator.pushNamed(context, "/dashboard"),
+                title: const Text("Add Event"),
+                onTap: () => addEvent(),
+              ),
+              ListTile(
+                title: const Text("List Events"),
+                onTap: () => Navigator.pushNamed(context, "/listEvents"),
+              ),
+              ListTile(
+                title: const Text("TEST"),
+                onTap: () => DatabaseHelper().getDataFromMysql(),
               )
             ],
           ),
@@ -73,16 +114,16 @@ class _HomeState extends State<Home> {
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.all(8),
-                  itemCount: entries.length,
+                  itemCount: appointments.length,
                   shrinkWrap: true,
                   itemBuilder: (BuildContext context, int index) {
                     return Center(
                       child: Card(
-                          color: Color(0xff0FFF95),
+                          color: Colors.white.withOpacity(0.8),
                           child:
                               Center(child: Padding(
                                 padding: const EdgeInsets.all(20.0),
-                                child: Text('Entry ${entries[index]}'),
+                                child: formatEntry(index),
                               ))),
                     );
                   },
@@ -94,6 +135,71 @@ class _HomeState extends State<Home> {
         }),
       ),
     );
+  }
+
+  // fetch mysql data to List appointments and refresh viewport
+  void fetchDataFromMysql()async{
+    
+     Response response = await http.post(
+      Uri.https(MysqlData().httpAuthority, "/studyhelper/getAppointments.php"),
+      body: {"dbUser":MysqlData().user, "passwd": MysqlData().passwd}
+    );
+    
+    appointments = await jsonDecode(response.body);
+    setState(() {});
+  }
+
+  // Format apppointments from Myql and create widget to display data
+  Widget formatEntry(int index){
+  return Text(
+    "${appointments[index]["title"]}: ${appointments[index]["date"]}, ${appointments[index]["start"]}-${appointments[index]["end"]} Uhr",
+    style: const TextStyle(
+      fontSize: 18
+    ),
+  );
+  }
+
+  void addEvent(){
+    showDialog(context: context, builder: (BuildContext context){
+      return AlertDialog(
+        title: const Text("Add an Event"),
+        content: Wrap(
+          children: [
+            const TextField(
+              decoration: InputDecoration(
+                labelText: "Title"
+              ),
+            ),
+            
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top:20),
+                child: ElevatedButton(
+                  onPressed: ()async{
+                    DateTime unformattedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(now.year),
+                      lastDate: DateTime((now.year+1))
+                    ) as DateTime;
+                    TimeOfDay unformattedTime = await showTimePicker(context: context, initialTime: TimeOfDay.now()) as TimeOfDay;
+                    // Avoid use_build_context_synchronously by checking mounted property
+                    if(!mounted) return;
+
+                    // Format date and time
+                    formattedTime = unformattedTime.format(context);
+                    formattedDate = DateFormat('dd-mm-YYYY').format(unformattedDate);
+                    // Close AlertDialog
+                    Navigator.pop(context);
+                    
+                  },
+                  child: const Text("Select Time")),
+              ),
+            ),
+          ],
+        ),
+      );
+    } );
   }
 }
 
