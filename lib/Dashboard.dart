@@ -32,7 +32,7 @@ class Dashboard extends StatelessWidget {
         appBar: AppBar(
           title: const Text("Study Helper"),
         ),
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: Colors.grey,
         drawer: Drawer(
           child: ListView(
             children: [
@@ -80,6 +80,7 @@ class Dashboard extends StatelessWidget {
               launchUrl(Uri.parse(link1));
             },
             child: Card(
+              elevation: 10,
               child: Padding(
                 padding: EdgeInsets.fromLTRB(0,80,0,80),
                 child: Center(
@@ -96,6 +97,7 @@ class Dashboard extends StatelessWidget {
               launchUrl(Uri.parse(link2));
             },
             child: Card(
+              elevation: 10,
               child: Padding(
                 padding: EdgeInsets.fromLTRB(0,80,0,80),
                 child: Center(
