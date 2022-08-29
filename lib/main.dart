@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:studyhelper/AddEvent.dart';
 import 'package:studyhelper/Calendar.dart';
 import 'package:studyhelper/Dashboard.dart';
 import 'package:studyhelper/DatabaseHelper.dart';
@@ -19,7 +18,6 @@ void main() {
       "/": (context) => const Home(),
       "/overview": (context) => const Overview(),
       "/dashboard":(context) => Dashboard(),
-      "/addEvent":(context) => const AddEvent(),
       "/listEvents":(context) => const ListEvents(),
 
     },
