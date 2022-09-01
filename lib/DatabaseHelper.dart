@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'package:intl/intl.dart';
-
 import 'package:studyhelper/MysqlData.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
@@ -20,36 +18,11 @@ class DatabaseHelper{
     List fullMysqlData = await jsonDecode(response.body);
 
     // Set appointments to recent appointments
-    appointments = await checkDates(fullMysqlData);
-    return appointments;
+    // DYYYYk SQL makes it easy you ape
+    //appointments = await checkDates(fullMysqlData);
+    return fullMysqlData;
   }
 
-  Future<List> checkDates(List fullMysqlData)async{
-
-    // Get current time and format it    
-    DateTime dtNow = DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now()));
-
-    // Create a list to hold future events
-    List futureEvents = [];
-
-    // Check all data if it is after now and if so,
-    // add it to the futureEvents List
-    for (var i = 0; i < fullMysqlData.length; i++) {
-      DateTime dt1 = formatSQLDate(fullMysqlData[i]["date"]);
-      if(dt1.isAfter(dtNow)){
-        futureEvents.add(fullMysqlData[i]);
-      }
-    }
-    return futureEvents;
-  }
-
-  // Parses date of event into DateTime object
-  DateTime formatSQLDate(String date){
-    List tmp = date.split(".");
-    String dt1 = "${tmp[2]}-${tmp[1]}-${tmp[0]}";
-
-    return DateTime.parse(dt1);
-  }
 
   // Insert new events into Mysql
   void insertIntoMysql({required String title, required String date, required String time})async{
