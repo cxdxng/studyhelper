@@ -10,9 +10,14 @@ import 'package:studyhelper/MysqlData.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   runApp(MaterialApp(
+    localizationsDelegates: [GlobalMaterialLocalizations.delegate],
+    supportedLocales: [
+      const Locale('de', 'DE'),
+    ],
     initialRoute: "/",
     routes: {
       "/": (context) => const Home(),
@@ -172,7 +177,7 @@ class _HomeState extends State<Home> {
                           // Get date from usr
                           DateTime unformattedDate = await showDatePicker(
                               context: context,
-                              locale: const Locale("de", "DE"),
+                              locale: const Locale('de', 'DE'),
                               initialDate: DateTime.now(),
                               firstDate: DateTime(now.year),
                               lastDate: DateTime((now.year + 1))
