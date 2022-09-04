@@ -16,7 +16,7 @@
    <application
         android:label="studyhelper"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <!-- Provide required visibility configuration for API level 30 and above -->
 
         <activity
