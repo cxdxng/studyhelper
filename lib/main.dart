@@ -14,7 +14,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   runApp(MaterialApp(
-    localizationsDelegates: [GlobalMaterialLocalizations.delegate],
+    localizationsDelegates: GlobalMaterialLocalizations.delegates,
     supportedLocales: [
       const Locale('de', 'DE'),
     ],
